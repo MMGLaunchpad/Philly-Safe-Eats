@@ -3,6 +3,7 @@ import {
   Viewer,
   Entity,
   Cartesian3,
+  Cartesian2,
   Color,
   ScreenSpaceEventHandler,
   ScreenSpaceEventType,
@@ -39,10 +40,7 @@ export default function RestaurantLayer({ viewerRef }: RestaurantLayerProps) {
 
     const currentEntities = entitiesRef.current
 
-    // Safely handle if data is wrapped in rows array or directly an array
-    const records: any[] = Array.isArray(restaurants)
-      ? restaurants
-      : (restaurants as any).rows || [];
+    const records = restaurants ?? [];
 
     records.forEach((restaurant) => {
       if (!restaurant || !restaurant.cartodb_id) return
@@ -122,7 +120,7 @@ export default function RestaurantLayer({ viewerRef }: RestaurantLayerProps) {
     const handler = new ScreenSpaceEventHandler(viewer.scene.canvas)
     handlerRef.current = handler
 
-    handler.setInputAction((clickEvent: any) => {
+    handler.setInputAction((clickEvent: { position: Cartesian2 }) => {
       const pickedObject = viewer.scene.pick(clickEvent.position)
 
       if (defined(pickedObject) && defined(pickedObject.id)) {

@@ -1,0 +1,236 @@
+/* ==============================================================
+   index.css — Global Styles & Design System
+   ==============================================================
+   
+   This is the FOUNDATION of all visual design in the app.
+   Every other CSS file references the variables defined here.
+   
+   We define:
+     - CSS Custom Properties (variables) for colors, spacing, etc.
+     - A global reset to normalize browser defaults
+     - The glassmorphism card utility class
+     - Shared animation keyframes
+   
+   "CSS Custom Properties" (--variable-name) work like variables in
+   programming. Define a value ONCE, reuse it EVERYWHERE. If you
+   change --color-clean here, every green element in the entire app
+   updates automatically. This makes maintaining a consistent design
+   system much easier.
+   ============================================================== */
+
+/* ---- 1. CSS Custom Properties (Design Tokens) ---- */
+:root {
+  /* --- Color Palette --- */
+  /* Dark background colors for the UI panels */
+  --color-bg-dark:      #0a0e1a;     /* Deepest background */
+  --color-bg-surface:   #0f1629;     /* Slightly lighter surface */
+  --color-accent:       #6c63ff;     /* Brand violet — used for interactive elements */
+  --color-accent-glow:  rgba(108, 99, 255, 0.35); /* Soft glow version of accent */
+
+  /* --- Safety Heatmap Colors (3-tier system) --- */
+  /* These MUST match the Cesium Entity colors in RestaurantLayer.tsx.
+     The spec defines three tiers based on open_violation_count:
+       Green  = 0 violations   (clean — safe to eat)
+       Orange = 1–2 violations (minor risk — proceed with caution)
+       Red    = 3+ violations  (high risk — consider alternatives) */
+  --color-clean:        #00e676;    /* Spring green: 0 violations */
+  --color-minor:        #ff9100;    /* Vivid orange: 1–2 violations */
+  --color-danger:       #ff1744;    /* Crimson red: 3+ violations */
+
+  /* Dimmed versions of the safety colors (used for subtle backgrounds) */
+  --color-clean-dim:    rgba(0, 230, 118, 0.15);
+  --color-minor-dim:    rgba(255, 145, 0, 0.15);
+  --color-danger-dim:   rgba(255, 23, 68, 0.15);
+
+  /* --- Text Hierarchy --- */
+  /* Multiple opacity levels create visual hierarchy:
+     primary = most important text (headings, names)
+     secondary = supporting text (labels, descriptions)
+     muted = least important (timestamps, metadata) */
+  --color-text-primary:   rgba(255, 255, 255, 0.95);
+  --color-text-secondary: rgba(255, 255, 255, 0.60);
+  --color-text-muted:     rgba(255, 255, 255, 0.35);
+
+  /* --- Glass Card Surface Colors --- */
+  /* These create the "glassmorphism" frosted glass look:
+     bg = semi-transparent fill
+     border = subtle edge that catches light
+     hover = slightly brighter on mouse hover */
+  --color-glass-bg:     rgba(10, 14, 26, 0.75);
+  --color-glass-border: rgba(255, 255, 255, 0.15);
+  --color-glass-hover:  rgba(255, 255, 255, 0.15);
+
+  /* --- Typography --- */
+  /* Inter is a modern, clean typeface. The fallback stack ensures
+     something similar loads on every operating system. */
+  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+
+  /* Font size scale using rem units.
+     rem = "root em" — relative to the browser's base font size (usually 16px).
+     This means your fonts scale if the user has accessibility zoom enabled. */
+  --text-xs:   0.75rem;   /* 12px */
+  --text-sm:   0.875rem;  /* 14px */
+  --text-base: 1rem;      /* 16px */
+  --text-lg:   1.125rem;  /* 18px */
+  --text-xl:   1.25rem;   /* 20px */
+  --text-2xl:  1.5rem;    /* 24px */
+
+  /* --- Spacing Scale --- */
+  /* Consistent spacing prevents "eyeballing" distances.
+     Use these instead of typing arbitrary pixel values. */
+  --space-1:  0.25rem;   /* 4px  */
+  --space-2:  0.5rem;    /* 8px  */
+  --space-3:  0.75rem;   /* 12px */
+  --space-4:  1rem;      /* 16px */
+  --space-5:  1.25rem;   /* 20px */
+  --space-6:  1.5rem;    /* 24px */
+  --space-8:  2rem;      /* 32px */
+
+  /* --- Border Radius (Shape) --- */
+  --radius-sm:   8px;
+  --radius-md:   12px;
+  --radius-lg:   16px;
+  --radius-xl:   24px;
+  --radius-full: 9999px; /* Fully rounded / pill shape */
+
+  /* --- Motion / Transitions --- */
+  /* Consistent animation durations keep the UI feeling cohesive.
+     Fast = micro-interactions (hover, focus)
+     Normal = panel opens, filters change
+     Slow = big movements (slide-in panels) */
+  --transition-fast:   150ms ease;
+  --transition-normal: 250ms ease;
+  --transition-slow:   400ms cubic-bezier(0.4, 0, 0.2, 1);
+
+  /* --- Blur (Glassmorphism) --- */
+  /* backdrop-filter: blur() is the key to the frosted-glass effect.
+     It blurs everything BEHIND the element. */
+  --blur-glass: blur(20px);
+  --blur-heavy: blur(40px);
+
+  /* --- Shadows --- */
+  --shadow-sm:  0 2px 8px rgba(0, 0, 0, 0.3);
+  --shadow-md:  0 4px 24px rgba(0, 0, 0, 0.4);
+  --shadow-lg:  0 8px 48px rgba(0, 0, 0, 0.5);
+  --shadow-glow: 0 0 20px var(--color-accent-glow);
+}
+
+/* ---- 2. Global Reset ---- */
+/*
+  A "reset" normalizes the visual differences between browsers.
+  Different browsers (Chrome, Firefox, Safari) have slightly different
+  default margins, padding, and sizing rules. This block forces them
+  all to behave the same way.
+*/
+*, *::before, *::after {
+  /* box-sizing: border-box means padding and border are INCLUDED
+     in an element's width/height calculation. Without this, a
+     200px-wide box with 20px padding would actually be 240px wide.
+     With border-box, it stays 200px. Much more intuitive. */
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html, body {
+  /* Fill the entire browser viewport — the globe IS the app */
+  width: 100%;
+  height: 100%;
+  overflow: hidden; /* No scrollbars — the 3D globe handles all navigation */
+  font-family: var(--font-sans);
+  background-color: var(--color-bg-dark);
+  color: var(--color-text-primary);
+
+  /* Font smoothing — makes text render crisper on Mac/iOS */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* The React root div must also fill the viewport */
+#root {
+  width: 100%;
+  height: 100%;
+}
+
+/* ---- 3. Glassmorphism Card Utility ---- */
+/*
+  "Glassmorphism" is a modern UI design trend that creates a
+  frosted-glass effect. It combines three CSS properties:
+    1. A semi-transparent background (you can see through it)
+    2. backdrop-filter: blur (blurs what's BEHIND the element)
+    3. A subtle border that catches light at the edges
+
+  This class is used by SearchBar, PanicSwitch, and Scorecard.
+  Apply it to any element that should look like a glass card
+  floating over the 3D globe.
+*/
+.glass-card {
+  background: var(--color-glass-bg);
+  backdrop-filter: var(--blur-glass);
+  -webkit-backdrop-filter: var(--blur-glass); /* Safari needs the prefix */
+  border: 1px solid var(--color-glass-border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-md);
+}
+
+/* ---- 4. Scrollbar Styling ---- */
+/* Custom thin scrollbar that matches our dark theme */
+::-webkit-scrollbar {
+  width: 4px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--color-glass-border);
+  border-radius: var(--radius-full);
+}
+
+/* ---- 5. Animation Keyframes ---- */
+/*
+  @keyframes define reusable animations. Components reference
+  them by name using the CSS `animation` property.
+  Example: animation: slideDown 400ms ease forwards;
+*/
+
+/* Slide down from above — used when the top bar first appears */
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Slide in from the right edge — used by the Scorecard panel */
+@keyframes slideInRight {
+  from {
+    opacity: 0;
+    transform: translateX(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* Simple fade-in — used for subtle element appearances */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+/* Gentle pulse — used for loading indicators */
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50%      { opacity: 0.4; }
+}
+
+/* Full spin — used for the loading spinner */
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}

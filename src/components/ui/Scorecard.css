@@ -1,0 +1,114 @@
+.scorecard {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  animation: slideInRight var(--transition-slow);
+}
+
+.scorecard-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: var(--space-4) var(--space-5);
+  border-bottom: 1px solid var(--color-glass-border);
+}
+
+.scorecard-header h2 {
+  font-size: var(--text-lg);
+  font-weight: 700;
+  margin-bottom: var(--space-1);
+  color: var(--color-text-primary);
+  line-height: 1.2;
+}
+
+.scorecard-legalname {
+  font-size: var(--text-xs);
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.scorecard-close {
+  background: transparent;
+  border: none;
+  color: var(--color-text-secondary);
+  font-size: 1.25rem;
+  cursor: pointer;
+  padding: var(--space-1);
+  margin: -var(--space-1); /* Increase hit area without affecting layout */
+  transition: color var(--transition-fast);
+}
+
+.scorecard-close:hover {
+  color: var(--color-text-primary);
+}
+
+.scorecard-body {
+  padding: var(--space-5);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+  flex-grow: 1;
+  overflow-y: auto;
+}
+
+/* Metric Group (Address, Status, etc) */
+.scorecard-metric {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.scorecard-metric-label {
+  font-size: var(--text-xs);
+  color: var(--color-text-secondary);
+  text-transform: uppercase;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+}
+
+.scorecard-metric-value {
+  font-size: var(--text-sm);
+  color: var(--color-text-primary);
+  line-height: 1.4;
+}
+
+/* The primary Safety Scorecard Chip */
+.safety-chip {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--space-4);
+  border-radius: var(--radius-md);
+  margin-top: var(--space-2);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.safety-chip-title {
+  font-size: var(--text-sm);
+  font-weight: 600;
+}
+
+.safety-chip-count {
+  font-size: var(--text-2xl);
+  font-weight: 700;
+}
+
+/* Color Modifiers for the Safety Chip */
+.safety-chip.is-clean {
+  background: var(--color-clean-dim);
+  border-color: var(--color-clean);
+  color: var(--color-clean);
+}
+
+.safety-chip.is-minor {
+  background: var(--color-minor-dim);
+  border-color: var(--color-minor);
+  color: var(--color-minor);
+}
+
+.safety-chip.is-danger {
+  background: var(--color-danger-dim);
+  border-color: var(--color-danger);
+  color: var(--color-danger);
+}

@@ -1,0 +1,27 @@
+{
+  "name": "philly-safe-eats",
+  "private": true,
+  "version": "1.0.0",
+  "description": "A CesiumJS 3D restaurant health-safety heatmap for Philadelphia, powered by live city open data.",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@tanstack/react-query": "^5.100.9",
+    "cesium": "^1.141.0",
+    "react": "^19.2.6",
+    "react-dom": "^19.2.6",
+    "vite-plugin-cesium": "^1.2.23",
+    "zustand": "^5.0.13"
+  },
+  "devDependencies": {
+    "@types/react": "^19.2.14",
+    "@types/react-dom": "^19.2.3",
+    "@vitejs/plugin-react": "^6.0.1",
+    "typescript": "^6.0.3",
+    "vite": "^8.0.11"
+  }
+}

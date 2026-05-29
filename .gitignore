@@ -1,0 +1,21 @@
+# Dependencies — always reinstall with `npm install`, never commit
+node_modules/
+
+# Vite build output
+dist/
+
+# Environment variables — contain secret API tokens
+.env
+.env.local
+.env.*.local
+
+# OS junk files
+.DS_Store
+Thumbs.db
+
+# Editor directories
+.vscode/
+.idea/
+
+# TypeScript build info
+*.tsbuildinfo

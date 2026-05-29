@@ -1,0 +1,72 @@
+{
+  // ============================================================
+  // tsconfig.json — TypeScript Compiler Configuration
+  // ============================================================
+  //
+  // TypeScript adds "type annotations" on top of JavaScript.
+  // This file tells the TypeScript compiler (tsc) how to interpret
+  // and check your code. Vite uses this for type-checking, but
+  // the actual compilation to browser-ready JavaScript is handled
+  // by Vite's internal bundler (esbuild), not tsc itself.
+  // ============================================================
+
+  "compilerOptions": {
+    // The JavaScript version to compile DOWN to.
+    // "ES2020" is widely supported by all modern browsers.
+    "target": "ES2020",
+
+    // Which built-in type definitions to include:
+    //   - "ES2020": modern JavaScript globals (Promise, Map, Set, etc.)
+    //   - "DOM": browser APIs (document, window, fetch, etc.)
+    //   - "DOM.Iterable": lets you iterate over browser collections
+    "lib": ["ES2020", "DOM", "DOM.Iterable"],
+
+    // Output module format. "ESNext" = native ES Modules (import/export).
+    // Vite requires ES Modules to work properly.
+    "module": "ESNext",
+
+    // How TypeScript resolves import paths. "bundler" defers to Vite,
+    // which is the modern recommended approach.
+    "moduleResolution": "bundler",
+
+    // Allow importing .ts files using .js extensions in import paths.
+    // Required for "bundler" module resolution to work correctly.
+    "allowImportingTsExtensions": true,
+
+    // Allow `import data from './file.json'` syntax.
+    "resolveJsonModule": true,
+
+    // Treat each file as an independent module. Required by Vite's
+    // fast bundler (esbuild) which processes files one at a time.
+    "isolatedModules": true,
+
+    // Don't emit compiled .js files — Vite handles that.
+    // tsc is only used here for type-checking, not output.
+    "noEmit": true,
+
+    // Enable JSX support using React 17+'s automatic runtime.
+    // This means you DON'T need `import React from 'react'` at
+    // the top of every file — the compiler adds it automatically.
+    "jsx": "react-jsx",
+
+    // Enable all strict type-checking options. This catches many
+    // common bugs at compile time (null checks, implicit any, etc.)
+    "strict": true,
+
+    // Warn when you declare a variable but never use it.
+    "noUnusedLocals": true,
+
+    // Warn when a function parameter is declared but never used.
+    "noUnusedParameters": true,
+
+    // Prevent accidental switch/case "fall-through" bugs.
+    "noFallthroughCasesInSwitch": true,
+
+    // Allow default imports from modules that don't have one.
+    // Needed for some CommonJS libraries.
+    "allowSyntheticDefaultImports": true
+  },
+
+  // Which directories TypeScript should type-check.
+  "include": ["src"]
+}

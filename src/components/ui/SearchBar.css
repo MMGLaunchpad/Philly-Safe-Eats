@@ -1,0 +1,58 @@
+/* ==============================================================
+   SearchBar.css — Styles for the Search Input
+   ==============================================================
+   The search bar is a glassmorphism-styled text input that
+   floats over the globe. It takes up most of the top bar width,
+   with the PanicSwitch sitting next to it.
+   ============================================================== */
+
+.search-bar {
+  /* Fill available space in the top-bar flexbox (PanicSwitch is fixed) */
+  flex: 1;
+  position: relative;
+  display: flex;
+  align-items: center;
+  padding: var(--space-3) var(--space-4);
+  gap: var(--space-3);
+}
+
+/* The magnifying glass icon (🔍 emoji or SVG) */
+.search-bar-icon {
+  font-size: var(--text-lg);
+  color: var(--color-text-secondary);
+  flex-shrink: 0; /* Don't squish the icon when input grows */
+}
+
+/* The actual text input field */
+.search-bar-input {
+  flex: 1;
+  background: transparent;
+  border: none;
+  outline: none;
+  color: var(--color-text-primary);
+  font-family: var(--font-sans);
+  font-size: var(--text-base);
+  font-weight: 400;
+  /* Placeholder text color */
+  &::placeholder {
+    color: var(--color-text-muted);
+  }
+}
+
+/* Clear button (appears when there's text in the input) */
+.search-bar-clear {
+  background: none;
+  border: none;
+  color: var(--color-text-muted);
+  font-size: var(--text-lg);
+  cursor: pointer;
+  padding: var(--space-1);
+  border-radius: var(--radius-sm);
+  transition: color var(--transition-fast), background var(--transition-fast);
+  line-height: 1;
+}
+
+.search-bar-clear:hover {
+  color: var(--color-text-primary);
+  background: var(--color-glass-hover);
+}

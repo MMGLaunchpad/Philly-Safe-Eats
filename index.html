@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+
+    <!-- Viewport: makes the app responsive on phones and tablets -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <!-- SEO: The title shown in the browser tab and search engine results -->
+    <title>Philly Safe Eats — 3D Restaurant Safety Heatmap</title>
+
+    <!-- SEO: A concise description for search engines -->
+    <meta
+      name="description"
+      content="Explore Philadelphia restaurants on a 3D globe. See real-time health violation data from the city's open data portal. Search, filter, and make safer dining decisions."
+    />
+
+    <!-- Favicon: emoji-based SVG icon (no external file needed) -->
+    <link
+      rel="icon"
+      href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🍽️</text></svg>"
+    />
+
+    <!--
+      Google Fonts: Inter
+      A clean, modern typeface used by many premium products (Linear, Vercel, etc.)
+      We preconnect to the font servers first for faster loading.
+    -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <!--
+      This <div id="root"> is where React mounts the entire application.
+      React's ReactDOM.createRoot() in main.tsx targets this element,
+      then React takes full control of everything rendered inside it.
+      
+      The Cesium 3D canvas, search bar, scorecard panel — everything
+      is rendered inside this single root div by React.
+    -->
+    <div id="root"></div>
+
+    <!--
+      Vite's module entry point.
+      During development: Vite serves this as a native ES Module.
+      During production build: Vite bundles it into an optimized script.
+    -->
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

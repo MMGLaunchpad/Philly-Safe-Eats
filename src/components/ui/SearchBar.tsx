@@ -47,7 +47,7 @@ export default function SearchBar() {
         className="search-bar-input"
         type="text"
         // The placeholder text shown when the input is empty
-        placeholder='Search restaurants… (e.g., "Pizza", "Sushi")'
+        placeholder='Search by name or cuisine…'
         // Controlled input: React manages the value, not the DOM.
         // This means the input always displays what's in the store.
         value={searchTerm}

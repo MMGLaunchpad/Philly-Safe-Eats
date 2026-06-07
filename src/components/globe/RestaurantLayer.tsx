@@ -9,9 +9,14 @@ import {
   ScreenSpaceEventType,
   defined,
   PointGraphics,
+  Math as CesiumMath,
+  HeightReference,
+  BoundingSphere,
+  HeadingPitchRange,
 } from 'cesium'
 import { useRestaurants } from '../../hooks/useRestaurants'
 import { useAppStore, RestaurantRow } from '../../stores/useAppStore'
+import { playInterfaceClick } from '../../utils/audio'
 
 interface RestaurantLayerProps {
   viewerRef: React.MutableRefObject<Viewer | null>
@@ -27,10 +32,12 @@ export default function RestaurantLayer({ viewerRef }: RestaurantLayerProps) {
   const { data: restaurants } = useRestaurants()
 
   const searchTerm = useAppStore((s) => s.searchTerm.toLowerCase())
-  const hideHighRisk = useAppStore((s) => s.hideHighRisk)
+  const culinaryFilter = useAppStore((s) => s.culinaryFilter)
+  const statusFilter = useAppStore((s) => s.statusFilter)
   const setSelectedRestaurant = useAppStore((s) => s.setSelectedRestaurant)
 
   const entitiesRef = useRef<Map<number, Entity>>(new Map())
+  const currentSelectionRingRef = useRef<Entity | null>(null);
   const handlerRef = useRef<ScreenSpaceEventHandler | null>(null)
 
   // 1. Create entities once when data is loaded
@@ -104,13 +111,20 @@ export default function RestaurantLayer({ viewerRef }: RestaurantLayerProps) {
         }
       }
 
-      if (hideHighRisk && data.open_violation_count > 0) {
-        show = false
+      if (culinaryFilter !== 'All Categories') {
+        const name = (data.tradename || data.legalname || '').toLowerCase()
+        if (!name.includes(culinaryFilter.toLowerCase())) {
+          show = false
+        }
       }
+
+      if (statusFilter === 'Clean (Green)' && data.open_violation_count !== 0) show = false
+      else if (statusFilter === 'Minor Notices (Orange)' && (data.open_violation_count < 1 || data.open_violation_count > 2)) show = false
+      else if (statusFilter === 'High Priority (Red)' && data.open_violation_count < 3) show = false
 
       entity.show = show
     })
-  }, [searchTerm, hideHighRisk, restaurants])
+  }, [searchTerm, culinaryFilter, statusFilter, restaurants])
 
   // 3. Handle click events
   useEffect(() => {
@@ -128,9 +142,68 @@ export default function RestaurantLayer({ viewerRef }: RestaurantLayerProps) {
         const data = entity.properties?.restaurantData?.getValue() as RestaurantRow | undefined
 
         if (data) {
-          setSelectedRestaurant(data)
+          // 1. Play the synthesized interface chime
+          playInterfaceClick();
+          setSelectedRestaurant(data);
+
+          // 2. Manage the Visual Selection Ring Graphic
+          if (currentSelectionRingRef.current) {
+            viewer.entities.remove(currentSelectionRingRef.current);
+            currentSelectionRingRef.current = null;
+          }
+
+          // Extract safe coordinates
+          let rawLng = data.lng;
+          let rawLat = data.lat;
+          if (rawLng && typeof rawLng === 'object' && Array.isArray((rawLng as any).coordinates)) {
+            const coords = (rawLng as any).coordinates;
+            rawLng = coords[0];
+            rawLat = coords[1];
+          }
+
+          const positionCoords = Cartesian3.fromDegrees(Number(rawLng), Number(rawLat));
+          
+          // Spawns a clean, flat 3D targeted ellipse highlight
+          currentSelectionRingRef.current = viewer.entities.add({
+            position: positionCoords,
+            name: 'Target Lock Highlight',
+            ellipse: {
+              semiMajorAxis: 45.0, // Scale radius in meters
+              semiMinorAxis: 45.0,
+              material: Color.CYAN.withAlpha(0.3), // Glassmorphic translucent cyan
+              outline: true,
+              outlineColor: Color.WHITE,
+              outlineWidth: 2.0,
+              heightReference: HeightReference.RELATIVE_TO_GROUND
+            }
+          });
+
+          // 3. Absolute Camera Orientation Safe-Lock via BoundingSphere
+          const boundingSphere = new BoundingSphere(positionCoords, 300.0);
+          const offset = new HeadingPitchRange(
+            CesiumMath.toRadians(-45.0),
+            CesiumMath.toRadians(-35.0),
+            650.0 // Close cinematic altitude — clears buildings while keeping subject visible
+          );
+
+          viewer.camera.flyToBoundingSphere(boundingSphere, {
+            offset,
+            duration: 1.8,
+          });
+        } else {
+          // Clean up graphics layer if user clicks off into empty map space
+          if (currentSelectionRingRef.current) {
+            viewer.entities.remove(currentSelectionRingRef.current);
+            currentSelectionRingRef.current = null;
+          }
+          setSelectedRestaurant(null)
         }
       } else {
+        // Clean up graphics layer if user clicks off into empty map space
+        if (currentSelectionRingRef.current) {
+          viewer.entities.remove(currentSelectionRingRef.current);
+          currentSelectionRingRef.current = null;
+        }
         setSelectedRestaurant(null)
       }
     }, ScreenSpaceEventType.LEFT_CLICK)

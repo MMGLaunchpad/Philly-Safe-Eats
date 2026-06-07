@@ -118,13 +118,34 @@ async function fetchRestaurants(): Promise<RestaurantRow[]> {
   // The Carto API wraps the results in a { rows: [...], total_rows: N } structure
   const json = await response.json()
 
+  const invalidKeywords = [
+    "gas station", 
+    "express mart", 
+    "school cafeteria", 
+    "wholesale distribution", 
+    "storage facility", 
+    "petroleum"
+  ]
+
+  const sanitizedRows = (json.rows || []).filter((row: any) => {
+    const trade = (row.tradename || '').toLowerCase()
+    const legal = (row.legalname || '').toLowerCase()
+    
+    for (const keyword of invalidKeywords) {
+      if (trade.includes(keyword) || legal.includes(keyword)) {
+        return false
+      }
+    }
+    return true
+  })
+
   console.log(
-    `[useRestaurants] ✅ Loaded ${json.rows?.length ?? 0} restaurants from Carto`
+    `[useRestaurants] ✅ Loaded ${sanitizedRows.length} restaurants from Carto (filtered from ${json.rows?.length ?? 0})`
   )
 
   // Return just the rows array — that's all our components need
   // Each row is a RestaurantRow: { cartodb_id, tradename, legalname, address, lat, lng, open_violation_count }
-  return json.rows as RestaurantRow[]
+  return sanitizedRows as RestaurantRow[]
 }
 
 // ==============================================================

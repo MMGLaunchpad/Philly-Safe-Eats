@@ -1,0 +1,134 @@
+.intro-screen {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  background: rgba(10, 14, 26, 0.92);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  animation: introFadeIn 0.6s ease-out;
+}
+
+.intro-content {
+  max-width: 540px;
+  padding: var(--space-8);
+  text-align: center;
+}
+
+/* Welcome badge pill */
+.intro-badge {
+  display: inline-block;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 9999px;
+  padding: 6px 18px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.7);
+  margin-bottom: var(--space-4);
+  letter-spacing: 0.02em;
+}
+
+.intro-title {
+  font-size: 3rem;
+  font-weight: 800;
+  margin-bottom: var(--space-2);
+  background: linear-gradient(135deg, #ffffff 0%, #6ee7b7 50%, #38bdf8 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  line-height: 1.1;
+}
+
+.intro-subtitle {
+  font-size: 1.2rem;
+  font-weight: 400;
+  color: rgba(255, 255, 255, 0.6);
+  margin-bottom: var(--space-6);
+  line-height: 1.5;
+}
+
+.intro-list {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 var(--space-8) 0;
+  text-align: left;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.intro-list li {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-3);
+  font-size: 0.95rem;
+  line-height: 1.55;
+  color: rgba(255, 255, 255, 0.82);
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 12px;
+  padding: 14px 16px;
+  transition: background 0.2s ease;
+}
+
+.intro-list li:hover {
+  background: rgba(255, 255, 255, 0.07);
+}
+
+.intro-list li strong {
+  color: #ffffff;
+}
+
+.intro-step-icon {
+  font-size: 1.4rem;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+/* CTA button — warm green gradient for a friendly, inviting feel */
+.intro-button {
+  background: linear-gradient(135deg, #10b981, #0ea5e9);
+  color: white;
+  border: none;
+  padding: 14px 40px;
+  font-size: 1.1rem;
+  font-weight: 700;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  box-shadow: 0 4px 20px rgba(16, 185, 129, 0.35);
+  letter-spacing: 0.02em;
+}
+
+.intro-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 30px rgba(16, 185, 129, 0.5);
+  filter: brightness(1.08);
+}
+
+.intro-button:active {
+  transform: translateY(0);
+}
+
+/* Data attribution footnote */
+.intro-footnote {
+  margin-top: var(--space-5);
+  font-size: 0.75rem;
+  color: rgba(255, 255, 255, 0.3);
+  line-height: 1.4;
+}
+
+@keyframes introFadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.97);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}

@@ -96,11 +96,19 @@ interface AppState {
   searchTerm: string
 
   /**
-   * The "Panic Switch" toggle. When true, all Orange (1–2 violations)
-   * and Red (3+ violations) markers are hidden from the globe,
-   * leaving only Green (clean) establishments visible.
+   * Filter by culinary style (e.g., "Pizza", "Bakery")
    */
-  hideHighRisk: boolean
+  culinaryFilter: string
+
+  /**
+   * Filter by status tier (e.g., "All Locations", "Clean (Green)", etc.)
+   */
+  statusFilter: string
+
+  /**
+   * Whether the user has completed the intro screen
+   */
+  hasOnboarded: boolean
 
   /**
    * The restaurant the user clicked on the globe. When non-null,
@@ -114,8 +122,14 @@ interface AppState {
   /** Called by SearchBar every time the user types a character */
   setSearchTerm: (term: string) => void
 
-  /** Called by PanicSwitch when the user clicks the toggle */
-  toggleHideHighRisk: () => void
+  /** Set the culinary style filter */
+  setCulinaryFilter: (filter: string) => void
+
+  /** Set the status tier filter */
+  setStatusFilter: (filter: string) => void
+
+  /** Set whether the user has onboarded */
+  setHasOnboarded: (onboarded: boolean) => void
 
   /** Called when user clicks a restaurant pin (or closes the Scorecard) */
   setSelectedRestaurant: (restaurant: RestaurantRow | null) => void
@@ -139,7 +153,9 @@ export const useAppStore = create<AppState>((set) => ({
   // ---- Initial State ----
   // These are the values when the app first loads:
   searchTerm: '',            // No search filter — show all restaurants
-  hideHighRisk: false,       // Panic Switch starts OFF — show everything
+  culinaryFilter: 'All Categories',
+  statusFilter: 'All Locations',
+  hasOnboarded: false,
   selectedRestaurant: null,  // No restaurant selected — Scorecard is closed
 
   // ---- Action Implementations ----
@@ -152,14 +168,9 @@ export const useAppStore = create<AppState>((set) => ({
    */
   setSearchTerm: (term) => set({ searchTerm: term }),
 
-  /**
-   * Flips the Panic Switch on or off.
-   * Uses a function form of set() so we can read the CURRENT
-   * state (`state.hideHighRisk`) and return its opposite.
-   * This is the standard pattern for toggling booleans in Zustand.
-   */
-  toggleHideHighRisk: () =>
-    set((state) => ({ hideHighRisk: !state.hideHighRisk })),
+  setCulinaryFilter: (filter) => set({ culinaryFilter: filter }),
+  setStatusFilter: (filter) => set({ statusFilter: filter }),
+  setHasOnboarded: (onboarded) => set({ hasOnboarded: onboarded }),
 
   /**
    * Sets the selected restaurant (or null to deselect).

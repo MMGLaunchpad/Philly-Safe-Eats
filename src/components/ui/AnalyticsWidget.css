@@ -1,0 +1,67 @@
+.analytics-widget {
+  position: absolute;
+  bottom: 2rem;
+  left: 2rem;
+  width: 280px;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  pointer-events: auto;
+  z-index: 10;
+  border-radius: 12px;
+  backdrop-filter: blur(12px);
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+.analytics-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  padding-bottom: 0.5rem;
+}
+
+.analytics-title {
+  margin: 0;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--color-text-primary, #fff);
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.analytics-toggle {
+  background: none;
+  border: none;
+  color: var(--color-text-secondary, rgba(255, 255, 255, 0.7));
+  font-size: 0.8rem;
+  cursor: pointer;
+}
+
+.analytics-toggle:hover {
+  color: var(--color-text-primary, #fff);
+}
+
+.analytics-content {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.analytics-stat {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.analytics-label {
+  font-size: 0.9rem;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.analytics-value {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: var(--color-primary);
+}

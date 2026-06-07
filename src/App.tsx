@@ -1,4 +1,4 @@
-import { useRef, useState, useCallback } from 'react'
+import { useRef, useState, useCallback, useEffect } from 'react'
 import { Viewer } from 'cesium'
 
 // Core Styles
@@ -9,11 +9,13 @@ import { useRestaurants } from './hooks/useRestaurants'
 
 // Components
 import GlobeView from './components/globe/GlobeView'
-import CameraController from './components/globe/CameraController'
 import RestaurantLayer from './components/globe/RestaurantLayer'
-import SearchBar from './components/ui/SearchBar'
-import PanicSwitch from './components/ui/PanicSwitch'
+import SearchOverlay from './components/ui/SearchOverlay'
+import IntroScreen from './components/ui/IntroScreen'
 import Scorecard from './components/ui/Scorecard'
+import AnalyticsWidget from './components/ui/AnalyticsWidget'
+import { useAppStore } from './stores/useAppStore'
+import { Cartesian3, Math as CesiumMath } from 'cesium'
 
 export default function App() {
   // We use a ref to hold the Viewer instance because putting it in 
@@ -35,6 +37,23 @@ export default function App() {
   const handleViewerReady = useCallback(() => {
     setViewerReady(true)
   }, [])
+
+  const hasOnboarded = useAppStore((s) => s.hasOnboarded)
+
+  // Trigger initial camera flight when the user finishes onboarding
+  useEffect(() => {
+    if (hasOnboarded && viewerRef.current) {
+      viewerRef.current.camera.flyTo({
+        destination: Cartesian3.fromDegrees(-75.1652, 39.9526, 3000.0),
+        orientation: {
+          heading: CesiumMath.toRadians(0.0),
+          pitch: CesiumMath.toRadians(-45.0),
+          roll: 0.0
+        },
+        duration: 2.0
+      });
+    }
+  }, [hasOnboarded]);
 
   // Fetch data using the Carto SQL React Query hook
   const { isLoading, isError } = useRestaurants()
@@ -62,12 +81,6 @@ export default function App() {
       {viewerReady && (
         <>
           {/* 
-            Renders nothing visible — manages camera animations when a 
-            restaurant is selected. 
-          */}
-          <CameraController viewerRef={viewerRef} />
-
-          {/* 
             Renders nothing visible — manages the translation of Carto SQL 
             rows into Cesium Entity pins, and handles click events. 
           */}
@@ -83,12 +96,14 @@ export default function App() {
         
         {/* Top center search and toggle controls */}
         <div className="top-bar">
-          <SearchBar />
-          <PanicSwitch />
+          <SearchOverlay />
         </div>
 
         {/* Right side drawer for the selected restaurant scorecard */}
         <Scorecard />
+
+        {/* Dynamic District Health Analytics Widget */}
+        <AnalyticsWidget />
 
         {/* Branding in the bottom left */}
         <div className="app-brand">
@@ -100,7 +115,7 @@ export default function App() {
         {isLoading && (
           <div className="loading-overlay glass-card">
             <div className="spinner" />
-            <span className="loading-text">Loading inspection data...</span>
+            <span className="loading-text">Finding restaurants near you…</span>
           </div>
         )}
 
@@ -114,6 +129,8 @@ export default function App() {
         )}
 
       </div>
+
+      <IntroScreen />
     </main>
   )
 }
